@@ -215,12 +215,12 @@
 
 
         /* --- Rich Text Editor Styles (Integrated) --- */
-        .editor-toolbar { /* Renamed from .toolbar */
+        .editor-toolbar {
             display: flex;
             gap: 5px;
-            margin-bottom: 10px; /* Reduced margin */
+            margin-bottom: 10px;
             flex-wrap: wrap;
-            padding-bottom: 5px; /* Reduced padding */
+            padding-bottom: 5px;
             border-bottom: 1px solid #eee;
             align-items: center;
         }
@@ -289,6 +289,25 @@
              display: block;
          }
 
+         /* Make images responsive within the editor */
+         #editorContent img {
+             max-width: 100%;
+             height: auto;
+         }
+
+         /* Style for tables within the editor */
+         #editorContent table {
+             border-collapse: collapse;
+             margin: 1em 0; /* Add some space around tables */
+         }
+          #editorContent th, #editorContent td {
+              border: 1px solid #a2a9b1;
+              padding: 8px;
+          }
+           #editorContent th {
+               background-color: #e9ecef;
+           }
+
 
         /* --- View Mode Styles --- */
         #viewArea { /* This is now the main content area in view mode */
@@ -320,6 +339,25 @@
               text-decoration: none;
               border-bottom-color: darkred;
          }
+
+         /* Make images responsive in view mode */
+         #viewArea img {
+             max-width: 100%;
+             height: auto;
+         }
+
+         /* Style for tables in view mode */
+         #viewArea table {
+             border-collapse: collapse;
+             margin: 1em 0; /* Add some space around tables */
+         }
+          #viewArea th, #viewArea td {
+              border: 1px solid #a2a9b1;
+              padding: 8px;
+          }
+           #viewArea th {
+               background-color: #e9ecef;
+           }
 
 
         .edit-area { /* Container for editor and save/delete buttons */
@@ -453,7 +491,8 @@
                  <button id="editPageButton">Edit Page</button>
                  <button id="logoutButton">Log Out</button> </div>
 
-            <h1 id="wikiPageMainTitle"></h1> <div class="editor-toolbar" id="editorToolbar"> <button id="boldButton">Bold</button>
+            <h1 id="wikiPageMainTitle"></h1> <div class="editor-toolbar" id="editorToolbar">
+                 <button id="boldButton">Bold</button>
                  <button id="italicButton">Italic</button>
                  <button id="underlineButton">Underline</button>
                  <button id="ulButton">Bullet List</button>
@@ -473,12 +512,13 @@
 
                  <button id="alignLeftButton">Align Left</button>
                  <button id="alignCenterButton">Align Center</button>
-                 <button id="alignRightButton">Align Center</button> <button id="justifyButton">Justify</button>
+                 <button id="alignRightButton">Align Right</button> <button id="justifyButton">Justify</button>
 
-                 <button id="insertTableButton">Insert Table</button>
-                  <button id="insertImageButton">Insert Image</button>
+                 <button id="insertLinkButton">Insert Link</button> <button id="insertTableButton">Insert Table</button>
+                  <button id="addTableRowButton">Add Row</button> <button id="deleteTableRowButton">Delete Row</button> <button id="addTableColumnButton">Add Column</button> <button id="deleteTableColumnButton">Delete Column</button> <button id="insertImageButton">Insert Image</button>
 
-                 </div>
+
+             </div>
 
 
             <div id="viewArea" class="page-content">
@@ -533,11 +573,11 @@
         const savePageButton = document.getElementById('savePageButton');
         const deletePageButton = document.getElementById('deletePageButton');
         const allPagesList = document.getElementById('allPagesList');
-        const mainTitle = document.getElementById('mainTitle'); // The main H1 at the top
+        const mainTitle = document.getElementById('mainTitle');
 
         // --- Rich Text Editor Elements ---
-        const editorToolbar = document.getElementById('editorToolbar'); // New
-        const editorContent = document.getElementById('editorContent'); // This is now the contenteditable div
+        const editorToolbar = document.getElementById('editorToolbar');
+        const editorContent = document.getElementById('editorContent'); // The contenteditable div
         const boldButton = document.getElementById('boldButton');
         const italicButton = document.getElementById('italicButton');
         const underlineButton = document.getElementById('underlineButton');
@@ -547,10 +587,15 @@
         const colorPicker = document.getElementById('colorPicker');
         const alignLeftButton = document.getElementById('alignLeftButton');
         const alignCenterButton = document.getElementById('alignCenterButton');
-        const alignRightButton = document.getElementById('alignRightButton'); // Corrected ID
+        const alignRightButton = document.getElementById('alignRightButton');
         const justifyButton = document.getElementById('justifyButton');
-        const insertTableButton = document.getElementById('insertTableButton'); // New
-        const insertImageButton = document.getElementById('insertImageButton'); // New
+        const insertLinkButton = document.getElementById('insertLinkButton'); // New
+        const insertTableButton = document.getElementById('insertTableButton');
+        const addTableRowButton = document.getElementById('addTableRowButton'); // New
+        const deleteTableRowButton = document.getElementById('deleteTableRowButton'); // New
+        const addTableColumnButton = document.getElementById('addTableColumnButton'); // New
+        const deleteTableColumnButton = document.getElementById('deleteTableColumnButton'); // New
+        const insertImageButton = document.getElementById('insertImageButton');
 
 
         // --- Storage Keys ---
@@ -560,19 +605,17 @@
 
         // --- Data Structures ---
         let userAccounts = {};
-        let wikiPages = {}; // Wiki pages will be stored per user in a real app, but for simulation, we'll keep it simple
+        let wikiPages = {};
 
         // --- State Variables ---
         let currentPageTitle = '';
         let currentUser = null;
 
         // --- Simulated Templates (Basic) ---
-        // Define simple templates here. Keys are template names (without brackets), values are HTML content.
         const simulatedTemplates = {
              'Stub': '<p><i>This page is a stub. You can help Sylvesterpidia by expanding it.</i></p>',
              'Welcome': '<h2>Welcome!</h2><p>Thank you for visiting Sylvesterpidia.</p>',
              'InfoBox': '<table border="1" cellpadding="5" cellspacing="0" style="float: right; margin: 0 0 1em 1em; border-collapse: collapse;"><tr><th>Info</th></tr><tr><td>Details here.</td></tr></table>'
-             // Add more templates as needed
         };
 
 
@@ -695,8 +738,8 @@
                  return;
              }
              if (newPassword !== confirmPassword) {
-                 authMessageArea.textContent = 'Passwords do not match.';
-                 authMessageArea.classList.add('error');
+                 messageArea.textContent = 'Passwords do not match.'; // Use messageArea for password mismatch
+                 messageArea.classList.add('error');
                  return;
              }
 
@@ -741,32 +784,27 @@
 
         // Function to sanitize a page title (remove leading/trailing spaces, basic cleaning)
         function sanitizeTitle(title) {
-            return title.trim().replace(/\s+/g, ' '); // Trim whitespace and reduce multiple spaces to one
+            return title.trim().replace(/\s+/g, ' ');
         }
 
         // Function to load and display a wiki page
         function loadPage(title) {
             const sanitizedTitle = sanitizeTitle(title);
-            currentPageTitle = sanitizedTitle; // Set current page state
+            currentPageTitle = sanitizedTitle;
 
-            // Update titles
-            document.getElementById('pageTitle').textContent = `${sanitizedTitle} - Sylvesterpidia`; // Update browser tab title
-            wikiPageMainTitle.textContent = sanitizedTitle; // Update main wiki page title
-            wikiPageTitleInput.value = sanitizedTitle; // Put title in the input box
+            document.getElementById('pageTitle').textContent = `${sanitizedTitle} - Sylvesterpidia`;
+            wikiPageMainTitle.textContent = sanitizedTitle;
+            wikiPageTitleInput.value = sanitizedTitle;
 
-            // Get content - if page doesn't exist, use a default message for new pages
             const pageContent = wikiPages[sanitizedTitle] || `<p>This page "${sanitizedTitle}" does not exist yet. Click "Edit Page" to create it.</p>`;
 
-            // Display content in view mode
-            viewArea.innerHTML = formatContentForView(pageContent); // Format content for display
-            viewArea.style.display = 'block'; // Show view area
+            viewArea.innerHTML = formatContentForView(pageContent);
+            viewArea.style.display = 'block';
 
-            // Hide edit area and editor toolbar
             editArea.style.display = 'none';
             editorToolbar.style.display = 'none'; // Hide toolbar in view mode
             editorContent.innerHTML = ''; // Clear editor content
 
-            // Update the list of all pages
             displayAllPages();
 
             console.log(`Loaded page: "${sanitizedTitle}"`);
@@ -779,16 +817,13 @@
                  return;
              }
 
-            // Get content - if page doesn't exist, start with empty editor
             const pageContent = wikiPages[currentPageTitle] || '';
 
-            // Load content into the editor (contenteditable div)
             editorContent.innerHTML = pageContent;
 
-            // Show edit area and editor toolbar
             editArea.style.display = 'flex';
             editorToolbar.style.display = 'flex'; // Show toolbar in edit mode
-            viewArea.style.display = 'none'; // Hide view area
+            viewArea.style.display = 'none';
 
             console.log(`Editing page: "${currentPageTitle}"`);
         }
@@ -800,27 +835,20 @@
                  return;
              }
 
-            // Get the HTML content from the contenteditable div
             const newContent = editorContent.innerHTML;
 
-             // If the page was previously non-existent and is now being saved with content,
-             // ensure it's added to the wikiPages object if it wasn't already.
              if (!wikiPages.hasOwnProperty(currentPageTitle) && newContent.trim() !== '') {
                   wikiPages[currentPageTitle] = newContent;
              } else if (newContent.trim() === '' && wikiPages.hasOwnProperty(currentPageTitle)) {
-                  // If saving an empty page that existed, maybe delete it?
-                  // For now, we'll allow saving empty pages.
                    wikiPages[currentPageTitle] = newContent;
              } else {
                   wikiPages[currentPageTitle] = newContent;
              }
 
-
-            saveWikiPages(); // Save to localStorage
+            saveWikiPages();
 
             console.log(`Saved page: "${currentPageTitle}"`);
 
-            // Switch back to view mode after saving
             loadPage(currentPageTitle);
         }
 
@@ -834,15 +862,13 @@
              }
 
              if (confirm(`Are you sure you want to delete the page "${currentPageTitle}"?`)) {
-                 delete wikiPages[currentPageTitle]; // Remove page from data structure
-                 saveWikiPages(); // Save to localStorage
+                 delete wikiPages[currentPageTitle];
+                 saveWikiPages();
 
                  console.log(`Deleted page: "${currentPageTitle}"`);
 
-                 // Load the home page or a default message after deletion
-                 loadPage(HOME_PAGE_TITLE); // Try loading home page
+                 loadPage(HOME_PAGE_TITLE);
                  if (!wikiPages.hasOwnProperty(HOME_PAGE_TITLE)) {
-                     // If home page didn't exist or was deleted, show welcome
                      viewArea.innerHTML = `<p>Page "${currentPageTitle}" deleted.</p><p>Welcome to your Simple Local Wiki! Enter a page title above and click "View Page" or "Edit Page" to get started.</p>`;
                      wikiPageMainTitle.textContent = "Simple Local Wiki";
                      document.getElementById('pageTitle').textContent = "Simple Local Wiki";
@@ -850,7 +876,6 @@
                      wikiPageTitleInput.value = '';
                  }
 
-                 // Update the list of all pages
                  displayAllPages();
              }
          }
@@ -858,8 +883,8 @@
 
         // Function to display the list of all existing pages
         function displayAllPages() {
-            allPagesList.innerHTML = ''; // Clear current list
-            const pageTitles = Object.keys(wikiPages).sort(); // Get and sort titles
+            allPagesList.innerHTML = '';
+            const pageTitles = Object.keys(wikiPages).sort();
 
             if (pageTitles.length === 0) {
                 allPagesList.innerHTML = '<li>No pages created yet.</li>';
@@ -870,10 +895,10 @@
                 const listItem = document.createElement('li');
                 const link = document.createElement('a');
                 link.textContent = title;
-                link.href = '#'; // Prevent actual navigation
+                link.href = '#';
                 link.addEventListener('click', (event) => {
                     event.preventDefault();
-                    loadPage(title); // Load the clicked page
+                    loadPage(title);
                 });
                 listItem.appendChild(link);
                 allPagesList.appendChild(listItem);
@@ -886,36 +911,26 @@
             let formattedContent = content;
 
             // 1. Simulate Template Replacement (Basic)
-            // Looks for {{TemplateName}} and replaces with predefined HTML
             const templateRegex = /\{\{(.*?)\}\}/g;
             formattedContent = formattedContent.replace(templateRegex, (match, templateName) => {
                  const trimmedTemplateName = templateName.trim();
                  if (simulatedTemplates.hasOwnProperty(trimmedTemplateName)) {
-                     return simulatedTemplates[trimmedTemplateName]; // Replace with template HTML
+                     return simulatedTemplates[trimmedTemplateName];
                  } else {
-                     // If template doesn't exist, show it in red or as a link to create it
                      return `<span style="color: red; font-weight: bold;" title="Template does not exist">\{\{${templateName}\}\}</span>`;
                  }
             });
-
 
             // 2. Find and replace [[Page Title]] links
             const linkRegex = /\[\[(.*?)\]\]/g;
             formattedContent = formattedContent.replace(linkRegex, (match, pageTitle) => {
                 const sanitizedLinkTitle = sanitizeTitle(pageTitle);
                 if (wikiPages.hasOwnProperty(sanitizedLinkTitle)) {
-                    // If page exists, create a blue link
                     return `<a href="#" onclick="loadPage('${sanitizedLinkTitle.replace(/'/g, "\\'").replace(/"/g, '\\"')}')">${pageTitle}</a>`;
                 } else {
-                    // If page doesn't exist, create a red link (indicating a broken or new link)
                     return `<a href="#" style="color: red;" onclick="loadPage('${sanitizedLinkTitle.replace(/'/g, "\\'").replace(/"/g, '\\"')}'); editPage();">${pageTitle}</a>`;
                 }
             });
-
-             // Note: Newlines are handled by the rich text editor saving HTML (e.g., <p>, <br>)
-             // If using a simple textarea, we would re-add newline replacement here.
-             // formattedContent = formattedContent.replace(/\n/g, '<br>'); // Only if not using rich editor saving HTML
-
 
             return formattedContent;
         }
@@ -929,30 +944,208 @@
 
          function insertHTML(html) {
              editorContent.focus();
+             // Use insertHTML command to insert raw HTML
              document.execCommand('insertHTML', false, html);
          }
 
-         function insertTable() {
-             const tableHTML = `
-             <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse;">
-                 <tr>
-                     <th>Header 1</th>
-                     <th>Header 2</th>
-                 </tr>
-                 <tr>
-                     <td>Data 1</td>
-                     <td>Data 2</td>
-                 </tr>
-             </table><p></p> `;
-             insertHTML(tableHTML);
+         function insertLink() {
+             editorContent.focus(); // Ensure focus for execCommand
+             const url = prompt("Enter the URL:");
+             if (url) {
+                  // If there's a selection, createLink will wrap it.
+                  // If no selection, it will insert the URL as text.
+                  // We can prompt for link text if no selection exists.
+                  const selection = window.getSelection();
+                  let linkText = selection.toString(); // Get selected text
+                  if (linkText.length === 0) {
+                      linkText = prompt("Enter the link text:", url); // Prompt for text if nothing selected
+                      if (!linkText) return; // Cancel if no text provided
+                  }
+
+                 // Use createLink command
+                 document.execCommand('createLink', false, url);
+
+                 // Note: createLink can be inconsistent. For more control,
+                 // you might manually insert an <a> tag using insertHTML.
+                 // Example manual insertion:
+                 /*
+                 const linkHTML = `<a href="${url}" target="_blank">${linkText}</a>`;
+                 insertHTML(linkHTML);
+                 */
+             }
          }
 
-         function insertImage() {
-             const imageUrl = prompt("Enter the image URL:");
-             if (imageUrl) {
-                 const imageHTML = `<img src="${imageUrl}" alt="Image" style="max-width: 100%; height: auto;"><p></p>`; // Add a paragraph after
-                 insertHTML(imageHTML);
+
+         // --- Table Manipulation Functions (Simplified) ---
+
+         // Helper to find the nearest ancestor element with a given tag name
+         function getNearestAncestor(element, tagName) {
+             let current = element;
+             while (current && current !== editorContent) {
+                 if (current.tagName === tagName.toUpperCase()) {
+                     return current;
+                 }
+                 current = current.parentElement;
              }
+             return null;
+         }
+
+         function addTableRow() {
+             editorContent.focus();
+             const selection = window.getSelection();
+             if (!selection.rangeCount) return;
+
+             const range = selection.getRangeAt(0);
+             const selectedElement = range.commonAncestorContainer.nodeType === 3 ? range.commonAncestorContainer.parentElement : range.commonAncestorContainer;
+
+             const nearestRow = getNearestAncestor(selectedElement, 'tr');
+             if (!nearestRow) {
+                 alert("Please place your cursor inside a table row to add a new row.");
+                 return;
+             }
+
+             const parentTable = getNearestAncestor(nearestRow, 'table');
+             if (!parentTable) {
+                  console.error("Could not find parent table for row.");
+                  return; // Should not happen if nearestRow is found
+             }
+
+             const newRow = nearestRow.cloneNode(true); // Clone the row structure
+             // Clear content in cloned cells
+             newRow.querySelectorAll('th, td').forEach(cell => cell.textContent = '');
+
+             // Insert the new row after the current row
+             nearestRow.parentNode.insertBefore(newRow, nearestRow.nextSibling);
+
+             console.log("Added table row.");
+         }
+
+         function deleteTableRow() {
+             editorContent.focus();
+             const selection = window.getSelection();
+             if (!selection.rangeCount) return;
+
+             const range = selection.getRangeAt(0);
+             const selectedElement = range.commonAncestorContainer.nodeType === 3 ? range.commonAncestorContainer.parentElement : range.commonAncestorContainer;
+
+             const nearestRow = getNearestAncestor(selectedElement, 'tr');
+             if (!nearestRow) {
+                 alert("Please place your cursor inside a table row to delete the row.");
+                 return;
+             }
+
+             const parentTableBody = nearestRow.parentElement; // Should be TBODY or the table itself
+             if (parentTableBody.tagName === 'TABLE') { // If row is directly in table (no TBODY)
+                 if (parentTableBody.rows.length <= 1) {
+                     alert("Cannot delete the last row of the table.");
+                     return;
+                 }
+             } else if (parentTableBody.tagName === 'TBODY') {
+                 if (parentTableBody.rows.length <= 1) {
+                     alert("Cannot delete the last row in this section of the table."); // Could be TBODY, THEAD, TFOOT
+                     return;
+                 }
+             } else {
+                 alert("Could not determine table structure.");
+                 console.error("Unexpected table parent element:", parentTableBody.tagName);
+                 return;
+             }
+
+
+             nearestRow.remove(); // Remove the row
+
+             console.log("Deleted table row.");
+         }
+
+         function addTableColumn() {
+             editorContent.focus();
+             const selection = window.getSelection();
+             if (!selection.rangeCount) return;
+
+             const range = selection.getRangeAt(0);
+             const selectedElement = range.commonAncestorContainer.nodeType === 3 ? range.commonAncestorContainer.parentElement : range.commonAncestorContainer;
+
+             const nearestCell = getNearestAncestor(selectedElement, 'td') || getNearestAncestor(selectedElement, 'th');
+             if (!nearestCell) {
+                 alert("Please place your cursor inside a table cell to add a new column.");
+                 return;
+             }
+
+             const nearestRow = getNearestAncestor(nearestCell, 'tr');
+              if (!nearestRow) {
+                   console.error("Could not find parent row for cell.");
+                   return;
+              }
+
+             const parentTable = getNearestAncestor(nearestRow, 'table');
+              if (!parentTable) {
+                   console.error("Could not find parent table for cell.");
+                   return;
+              }
+
+             // Find the index of the current cell within its row
+             const cellIndex = Array.from(nearestRow.cells).indexOf(nearestCell);
+
+             // Iterate through all rows in the table and add a new cell at the same index
+             parentTable.querySelectorAll('tr').forEach(row => {
+                 const newCell = document.createElement(nearestCell.tagName); // Create cell of same type (TD or TH)
+                 newCell.textContent = ''; // Empty content
+                 if (cellIndex + 1 < row.cells.length) {
+                      // Insert before the cell to the right
+                      row.insertBefore(newCell, row.cells[cellIndex + 1]);
+                 } else {
+                      // Append to the end if it's the last column
+                      row.appendChild(newCell);
+                 }
+             });
+
+             console.log("Added table column.");
+         }
+
+         function deleteTableColumn() {
+             editorContent.focus();
+             const selection = window.getSelection();
+             if (!selection.rangeCount) return;
+
+             const range = selection.getRangeAt(0);
+             const selectedElement = range.commonAncestorContainer.nodeType === 3 ? range.commonAncestorContainer.parentElement : range.commonAncestorContainer;
+
+             const nearestCell = getNearestAncestor(selectedElement, 'td') || getNearestAncestor(selectedElement, 'th');
+             if (!nearestCell) {
+                 alert("Please place your cursor inside a table cell to delete the column.");
+                 return;
+             }
+
+             const nearestRow = getNearestAncestor(nearestCell, 'tr');
+              if (!nearestRow) {
+                   console.error("Could not find parent row for cell.");
+                   return;
+              }
+
+             const parentTable = getNearestAncestor(nearestRow, 'table');
+              if (!parentTable) {
+                   console.error("Could not find parent table for cell.");
+                   return;
+              }
+
+             // Find the index of the current cell within its row
+             const cellIndex = Array.from(nearestRow.cells).indexOf(nearestCell);
+
+             // Check if it's the last column
+             if (nearestRow.cells.length <= 1) {
+                 alert("Cannot delete the last column of the table.");
+                 return;
+             }
+
+
+             // Iterate through all rows in the table and remove the cell at the same index
+             parentTable.querySelectorAll('tr').forEach(row => {
+                 if (row.cells[cellIndex]) {
+                     row.cells[cellIndex].remove();
+                 }
+             });
+
+             console.log("Deleted table column.");
          }
 
 
@@ -977,17 +1170,15 @@
              authSection.classList.add('hidden');
              wikiSection.classList.add('active');
              wikiSection.classList.remove('hidden');
-             mainTitle.textContent = "Sylvesterpidia"; // Set main title for wiki section
-             document.getElementById('pageTitle').textContent = "Sylvesterpidia"; // Update browser tab title
+             mainTitle.textContent = "Sylvesterpidia";
+             document.getElementById('pageTitle').textContent = "Sylvesterpidia";
 
-             loadWikiPages(); // Load wiki pages for the logged-in user (simulation)
+             loadWikiPages();
 
-             // Load the home page or a default page after login
              const HOME_PAGE_TITLE = 'Home Page';
              if (wikiPages.hasOwnProperty(HOME_PAGE_TITLE)) {
                  loadPage(HOME_PAGE_TITLE);
              } else {
-                 // Create a default home page if it doesn't exist
                  wikiPages[HOME_PAGE_TITLE] = `<h1>Welcome to Sylvesterpidia!</h1>
 
 <p>This is the Home Page.</p>
@@ -998,16 +1189,18 @@
 
 <p>To link to another page, use double square brackets like this: [[Example Page]]. If the page doesn't exist, the link will be red. Click on a red link to create that page!</p>
 
-<p>Here's a link to a [[Non-Existent Page]].</p>
+<p>You can also insert standard links using the "Insert Link" button.</p>
 
-<p>You can also use formatting from the toolbar when editing, like <b>bold</b>, <i>italic</i>, and <font color="red">color</font>.</p>
+<p>Here's a link to <a href="https://www.google.com" target="_blank">Google</a>.</p>
 
-<p>Try inserting a table or an image using the buttons in the editor toolbar.</p>
+<p>You can use formatting from the toolbar when editing, like <b>bold</b>, <i>italic</i>, and <span style="color: red;">color</span>.</p>
+
+<p>Try inserting a table or an image using the buttons in the editor toolbar. You can also add/delete rows and columns in tables.</p>
 
 <p>Here's a simulated template: {{Stub}}</p>
 <p>Here's another: {{Welcome}}</p>
 <p>And an infobox: {{InfoBox}}</p>
-`; // Default content now includes HTML and templates
+`;
                  saveWikiPages();
                  loadPage(HOME_PAGE_TITLE);
              }
@@ -1045,8 +1238,8 @@
         editPageButton.addEventListener('click', () => {
              const title = wikiPageTitleInput.value;
              if (title) {
-                 loadPage(title); // Load the page content first
-                 editPage(); // Then switch to edit mode
+                 loadPage(title);
+                 editPage();
              } else {
                  alert("Please enter a page title to edit.");
              }
@@ -1066,32 +1259,36 @@
         colorPicker.addEventListener('input', (event) => formatText('foreColor', event.target.value));
         alignLeftButton.addEventListener('click', () => formatText('justifyLeft'));
         alignCenterButton.addEventListener('click', () => formatText('justifyCenter'));
-        alignRightButton.addEventListener('click', () => formatText('justifyRight')); // Corrected ID
+        alignRightButton.addEventListener('click', () => formatText('justifyRight'));
         justifyButton.addEventListener('click', () => formatText('justifyFull'));
-        insertTableButton.addEventListener('click', insertTable); // New listener
-        insertImageButton.addEventListener('click', insertImage); // New listener
+        insertLinkButton.addEventListener('click', insertLink); // New listener
+        insertTableButton.addEventListener('click', insertTable);
+        addTableRowButton.addEventListener('click', addTableRow); // New listener
+        deleteTableRowButton.addEventListener('click', deleteTableRow); // New listener
+        addTableColumnButton.addEventListener('click', addTableColumn); // New listener
+        deleteTableColumnButton.addEventListener('click', deleteTableColumn); // New listener
+        insertImageButton.addEventListener('click', insertImage);
 
 
         // Allow viewing/editing page by pressing Enter in the input field (in wiki section)
         wikiPageTitleInput.addEventListener('keypress', function(event) {
             if (event.key === 'Enter') {
                 event.preventDefault();
-                 viewPageButton.click(); // Simulate click on View Page button
+                 viewPageButton.click();
             }
         });
 
 
         // --- Initialization ---
         window.addEventListener('load', () => {
-            loadAccounts(); // Load existing accounts
+            loadAccounts();
 
-            // Check if a user is already logged in
             if (getCurrentUser()) {
                  console.log("User already logged in:", currentUser);
-                 showWiki(); // If logged in, show the wiki directly
+                 showWiki();
             } else {
                  console.log("No user logged in, showing auth section.");
-                 showAuthSection(); // If not logged in, show the auth section
+                 showAuthSection();
             }
         });
 
@@ -1103,3 +1300,5 @@
 
 </body>
 </html>
+
+
