@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">Sylvesterpidia - Log in or Create Account</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa; /* Light gray background */
+            color: #202122; /* Default text color */
+            line-height: 1.6;
+            display: flex;
+            justify-content: center; /* Center content horizontally */
+            align-items: flex-start; /* Align content to the top */
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #fff; /* White background for content area */
+            border: 1px solid #a2a9b1; /* Border */
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            padding: 30px; /* Increased padding */
+            width: 100%;
+            max-width: 800px; /* Max width for the main container */
+            box-sizing: border-box;
+            display: flex; /* Use flexbox for main sections */
+            flex-direction: column;
+        }
+
+        h1 {
+            color: #007bff; /* Blue, similar to links */
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        h2 {
+            color: #54595d; /* Darker gray for section titles */
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+
+        /* --- Authentication Section Styles --- */
+        #authSection {
+            /* Initially active */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 500px; /* Max width for auth forms */
+            margin: 0 auto; /* Center auth section */
+        }
+
+         #authSection.hidden {
+             display: none; /* Hide when wiki is shown */
+         }
+
+
+        .form-section {
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            width: 100%; /* Forms take full width of authSection */
+        }
+
+        .form-section.active {
+            display: flex; /* Show active form */
+        }
+
+        .form-section label {
+            display: block; /* Labels on their own line */
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #54595d; /* Darker gray for labels */
+        }
+
+        .form-section input[type="text"],
+        .form-section input[type="password"] {
+            width: 100%; /* Full width inputs */
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #a2a9b1;
+            border-radius: 4px;
+            box-sizing: border-box; /* Include padding and border in width */
+            font-size: 1em;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-section button[type="submit"] {
+            display: block; /* Button on its own line */
+            width: 100%; /* Full width button */
+            padding: 10px;
+            background-color: #337ab7; /* Blue button color */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.2s ease;
+        }
+
+        .form-section button[type="submit"]:hover {
+            background-color: #286090; /* Darker blue on hover */
+        }
+
+        .switch-form-link {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+
+        .switch-form-link a {
+            color: #007bff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .switch-form-link a:hover {
+            text-decoration: underline;
+        }
+
+
+        .message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .message.success {
+            background-color: #dff0d8; /* Light green */
+            color: #3c763d; /* Dark green text */
+            border: 1px solid #d6e9c6;
+        }
+
+        .message.error {
+            background-color: #f2dede; /* Light red */
+            color: #a94442; /* Dark red text */
+            border: 1px solid #ebccd1;
+        }
+
+
+        /* --- Wiki Content Section Styles --- */
+        #wikiSection {
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            width: 100%;
+        }
+
+         #wikiSection.active {
+             display: flex; /* Show when active */
+         }
+
+         .wiki-controls {
+             display: flex;
+             gap: 10px;
+             margin-bottom: 15px;
+             flex-wrap: wrap;
+             align-items: center;
+             border-bottom: 1px solid #eee;
+             padding-bottom: 10px;
+         }
+
+         #wikiPageTitleInput {
+             flex-grow: 1; /* Allow input to take space */
+             padding: 8px 12px;
+             border: 1px solid #ccc;
+             border-radius: 5px;
+             font-size: 1em;
+             outline: none;
+         }
+
+         .wiki-controls button {
+             padding: 8px 15px;
+             font-size: 1em;
+             cursor: pointer;
+             border: none;
+             border-radius: 5px;
+             transition: background-color 0.2s ease;
+             font-family: 'Inter', sans-serif;
+         }
+
+         #viewPageButton {
+             background-color: #17a2b8; /* Cyan */
+             color: white;
+         }
+         #viewPageButton:hover {
+             background-color: #138496;
+         }
+
+         #editPageButton {
+             background-color: #ffc107; /* Yellow */
+         }
+         #editPageButton:hover {
+             background-color: #e0a800;
+         }
+
+         #logoutButton { /* New Logout button style */
+             background-color: #6c757d; /* Gray */
+             color: white;
+         }
+          #logoutButton:hover {
+              background-color: #5a6268;
+          }
+
+
+        /* --- Rich Text Editor Styles (Integrated) --- */
+        .editor-toolbar { /* Renamed from .toolbar */
+            display: flex;
+            gap: 5px;
+            margin-bottom: 10px; /* Reduced margin */
+            flex-wrap: wrap;
+            padding-bottom: 5px; /* Reduced padding */
+            border-bottom: 1px solid #eee;
+            align-items: center;
+        }
+
+        .editor-toolbar button,
+        .editor-toolbar select,
+        .editor-toolbar input[type="color"] {
+            padding: 6px 10px;
+            font-size: 0.9em;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #e9ecef;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+            font-family: 'Inter', sans-serif;
+            height: 32px;
+            box-sizing: border-box;
+        }
+
+         .editor-toolbar select {
+             padding-right: 25px;
+             -webkit-appearance: none;
+             -moz-appearance: none;
+             appearance: none;
+             background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23333%22%20d%3D%22M287%2C114.7L159.7%2C242c-5.4%2C5.4-14.2%2C5.4-19.6%2C0L5.4%2C114.7C-1.8%2C107.5-1.8%2C95.1%2C5.4%2C87.9c7.2-7.2%2C19.6-7.2%2C26.8%2C0l127.3%2C127.3L260.2%2C87.9c7.2-7.2%2C19.6-7.2%2C26.8%2C0C294.2%2C95.1%2C294.2%2C107.5%2C287%2C114.7z%22%2F%3E%3C%2Fsvg%3E');
+             background-repeat: no-repeat;
+             background-position: right 8px top 50%;
+             background-size: 12px auto;
+         }
+
+
+        .editor-toolbar button:hover,
+        .editor-toolbar select:hover,
+        .editor-toolbar input[type="color"]:hover {
+            background-color: #dee2e6;
+            border-color: #bbb;
+        }
+
+        .editor-toolbar button:active {
+             background-color: #c0c4c8;
+        }
+
+
+        /* Style for the editable content area */
+        #editorContent { /* This is now the main content area in edit mode */
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            min-height: 300px;
+            outline: none;
+            overflow-y: auto;
+            line-height: 1.6;
+            background-color: #fff;
+             word-wrap: break-word; /* Ensure content wraps */
+        }
+
+        #editorContent:focus {
+            border-color: #007bff;
+        }
+
+         /* Placeholder text style */
+         #editorContent:empty:before {
+             content: attr(placeholder);
+             color: #a9a9a9;
+             pointer-events: none;
+             display: block;
+         }
+
+
+        /* --- View Mode Styles --- */
+        #viewArea { /* This is now the main content area in view mode */
+             min-height: 300px;
+             padding: 15px; /* Added padding for consistency with editor */
+             line-height: 1.6;
+             word-wrap: break-word; /* Ensure content wraps */
+             border: 1px solid #fff; /* Match editor border style but white */
+             border-radius: 5px;
+             background-color: #fff;
+        }
+
+        #viewArea a {
+            color: #007bff;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        #viewArea a:hover {
+            color: #0056b3;
+        }
+
+         /* Style for red links (non-existent pages) */
+         #viewArea a[style*="color: red;"] {
+             text-decoration: none; /* Remove underline for red links */
+             border-bottom: 1px dotted red; /* Dotted underline for red links */
+         }
+         #viewArea a[style*="color: red;"]:hover {
+              text-decoration: none;
+              border-bottom-color: darkred;
+         }
+
+
+        .edit-area { /* Container for editor and save/delete buttons */
+             display: none; /* Hidden by default */
+             flex-direction: column;
+         }
+
+
+        .page-list-section {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .page-list-section h3 {
+            margin-top: 0;
+            color: #555;
+        }
+
+        #allPagesList {
+            list-style: disc;
+            padding-left: 20px;
+        }
+
+        #allPagesList li a {
+             text-decoration: none; /* Remove underline from list links */
+        }
+         #allPagesList li a:hover {
+             text-decoration: underline;
+         }
+
+
+        /* Basic Wikipedia-like elements (mostly for visual feel) */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #a2a9b1;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px solid #a2a9b1;
+            font-size: 0.9em;
+            color: #54595d;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                padding: 20px;
+            }
+            h1 {
+                font-size: 1.5em;
+            }
+             .wiki-controls {
+                 flex-direction: column;
+                 align-items: stretch;
+             }
+              .wiki-controls input[type="text"], .wiki-controls button {
+                 width: 100%;
+                 box-sizing: border-box;
+              }
+             .editor-toolbar button, .editor-toolbar select, .editor-toolbar input[type="color"] {
+                 width: 100%; /* Full width controls in editor toolbar */
+                 box-sizing: border-box;
+             }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1 id="mainTitle">Welcome to Sylvesterpidia</h1>
+        </div>
+
+        <div id="authSection" class="active">
+            <div id="signinSection" class="form-section active">
+                <h2>Log in</h2>
+                <form id="signinForm">
+                    <div>
+                        <label for="signinUsername">Username:</label>
+                        <input type="text" id="signinUsername" name="username" required>
+                    </div>
+                    <div>
+                        <label for="signinPassword">Password:</label>
+                        <input type="password" id="signinPassword" name="password" required>
+                    </div>
+                    <button type="submit">Log in</button>
+                </form>
+                <div class="switch-form-link">
+                    Don't have an account? <a href="#" id="showCreateAccount">Create an account</a>
+                </div>
+            </div>
+
+            <div id="createAccountSection" class="form-section">
+                 <h2>Create account</h2>
+                 <form id="createAccountForm">
+                     <div>
+                         <label for="createUsername">Username:</label>
+                         <input type="text" id="createUsername" name="username" required>
+                     </div>
+                     <div>
+                         <label for="createPassword">Password:</label>
+                         <input type="password" id="createPassword" name="password" required>
+                     </div>
+                      <div>
+                          <label for="confirmPassword">Confirm password:</label>
+                          <input type="password" id="confirmPassword" name="confirmPassword" required>
+                      </div>
+                     <button type="submit">Create your account</button>
+                 </form>
+                 <div class="switch-form-link">
+                     Already have an account? <a href="#" id="showSignIn">Log in</a>
+                 </div>
+            </div>
+
+            <div id="authMessageArea" class="message">
+                </div>
+        </div>
+
+        <div id="wikiSection" class="hidden">
+            <div class="wiki-controls">
+                 <input type="text" id="wikiPageTitleInput" placeholder="Enter Page Title">
+                 <button id="viewPageButton">View Page</button>
+                 <button id="editPageButton">Edit Page</button>
+                 <button id="logoutButton">Log Out</button> </div>
+
+            <h1 id="wikiPageMainTitle"></h1> <div class="editor-toolbar" id="editorToolbar"> <button id="boldButton">Bold</button>
+                 <button id="italicButton">Italic</button>
+                 <button id="underlineButton">Underline</button>
+                 <button id="ulButton">Bullet List</button>
+                 <button id="olButton">Numbered List</button>
+
+                 <select id="fontSizeSelect">
+                     <option value="1">Very Small</option>
+                     <option value="2">Small</option>
+                     <option value="3" selected>Normal</option>
+                     <option value="4">Medium</option>
+                     <option value="5">Large</option>
+                     <option value="6">Very Large</option>
+                     <option value="7">Huge</option>
+                 </select>
+
+                 <input type="color" id="colorPicker" value="#000000">
+
+                 <button id="alignLeftButton">Align Left</button>
+                 <button id="alignCenterButton">Align Center</button>
+                 <button id="alignRightButton">Align Center</button> <button id="justifyButton">Justify</button>
+
+                 <button id="insertTableButton">Insert Table</button>
+                  <button id="insertImageButton">Insert Image</button>
+
+                 </div>
+
+
+            <div id="viewArea" class="page-content">
+                </div>
+
+            <div id="editArea" class="edit-area">
+                <div id="editorContent" contenteditable="true" placeholder="Edit page content here...">
+                    </div>
+                <button id="savePageButton">Save Page</button>
+                 <button id="deletePageButton">Delete Page</button>
+            </div>
+
+            <div class="page-list-section">
+                <h3>All Pages:</h3>
+                <ul id="allPagesList">
+                    </ul>
+            </div>
+        </div>
+
+
+        <div class="footer">
+            <p>This is a simple simulation and not a real wiki site.</p>
+            <p>&copy; 2025 Sylvesterpidia Simulation</p>
+        </div>
+    </div>
+
+    <script>
+        // --- Authentication Elements ---
+        const authSection = document.getElementById('authSection');
+        const signinSection = document.getElementById('signinSection');
+        const createAccountSection = document.getElementById('createAccountSection');
+        const signinForm = document.getElementById('signinForm');
+        const createAccountForm = document.getElementById('createAccountForm');
+        const signinUsernameInput = document.getElementById('signinUsername');
+        const signinPasswordInput = document.getElementById('signinPassword');
+        const createUsernameInput = document.getElementById('createUsername');
+        const createPasswordInput = document.getElementById('createPassword');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const showCreateAccountLink = document.getElementById('showCreateAccount');
+        const showSignInLink = document.getElementById('showSignIn');
+        const authMessageArea = document.getElementById('authMessageArea');
+
+        // --- Wiki Elements ---
+        const wikiSection = document.getElementById('wikiSection');
+        const wikiPageTitleInput = document.getElementById('wikiPageTitleInput');
+        const viewPageButton = document.getElementById('viewPageButton');
+        const editPageButton = document.getElementById('editPageButton');
+        const logoutButton = document.getElementById('logoutButton');
+        const wikiPageMainTitle = document.getElementById('wikiPageMainTitle');
+        const viewArea = document.getElementById('viewArea');
+        const editArea = document.getElementById('editArea');
+        const savePageButton = document.getElementById('savePageButton');
+        const deletePageButton = document.getElementById('deletePageButton');
+        const allPagesList = document.getElementById('allPagesList');
+        const mainTitle = document.getElementById('mainTitle'); // The main H1 at the top
+
+        // --- Rich Text Editor Elements ---
+        const editorToolbar = document.getElementById('editorToolbar'); // New
+        const editorContent = document.getElementById('editorContent'); // This is now the contenteditable div
+        const boldButton = document.getElementById('boldButton');
+        const italicButton = document.getElementById('italicButton');
+        const underlineButton = document.getElementById('underlineButton');
+        const ulButton = document.getElementById('ulButton');
+        const olButton = document.getElementById('olButton');
+        const fontSizeSelect = document.getElementById('fontSizeSelect');
+        const colorPicker = document.getElementById('colorPicker');
+        const alignLeftButton = document.getElementById('alignLeftButton');
+        const alignCenterButton = document.getElementById('alignCenterButton');
+        const alignRightButton = document.getElementById('alignRightButton'); // Corrected ID
+        const justifyButton = document.getElementById('justifyButton');
+        const insertTableButton = document.getElementById('insertTableButton'); // New
+        const insertImageButton = document.getElementById('insertImageButton'); // New
+
+
+        // --- Storage Keys ---
+        const ACCOUNTS_STORAGE_KEY = 'sylvesterpidiaAccounts';
+        const WIKI_STORAGE_KEY = 'sylvesterpidiaWikiPages';
+        const CURRENT_USER_STORAGE_KEY = 'sylvesterpidiaCurrentUser';
+
+        // --- Data Structures ---
+        let userAccounts = {};
+        let wikiPages = {}; // Wiki pages will be stored per user in a real app, but for simulation, we'll keep it simple
+
+        // --- State Variables ---
+        let currentPageTitle = '';
+        let currentUser = null;
+
+        // --- Simulated Templates (Basic) ---
+        // Define simple templates here. Keys are template names (without brackets), values are HTML content.
+        const simulatedTemplates = {
+             'Stub': '<p><i>This page is a stub. You can help Sylvesterpidia by expanding it.</i></p>',
+             'Welcome': '<h2>Welcome!</h2><p>Thank you for visiting Sylvesterpidia.</p>',
+             'InfoBox': '<table border="1" cellpadding="5" cellspacing="0" style="float: right; margin: 0 0 1em 1em; border-collapse: collapse;"><tr><th>Info</th></tr><tr><td>Details here.</td></tr></table>'
+             // Add more templates as needed
+        };
+
+
+        // --- Local Storage Functions ---
+        function loadFromLocalStorage(key, defaultValue) {
+            try {
+                const data = localStorage.getItem(key);
+                return data ? JSON.parse(data) : defaultValue;
+            } catch (e) {
+                console.error(`Error loading from localStorage key "${key}":`, e);
+                return defaultValue;
+            }
+        }
+
+        function saveToLocalStorage(key, data) {
+            try {
+                localStorage.setItem(key, JSON.stringify(data));
+            } catch (e) {
+                 console.error(`Error saving to localStorage key "${key}":`, e);
+            }
+        }
+
+        function removeFromLocalStorage(key) {
+             try {
+                 localStorage.removeItem(key);
+             } catch (e) {
+                 console.error(`Error removing from localStorage key "${key}":`, e);
+             }
+        }
+
+
+        // --- Account Management (Simulated) ---
+        function loadAccounts() {
+            userAccounts = loadFromLocalStorage(ACCOUNTS_STORAGE_KEY, {});
+        }
+
+        function saveAccounts() {
+            saveToLocalStorage(ACCOUNTS_STORAGE_KEY, userAccounts);
+        }
+
+        function setCurrentUser(username) {
+             currentUser = username;
+             saveToLocalStorage(CURRENT_USER_STORAGE_KEY, username);
+             console.log("Current user set:", currentUser);
+        }
+
+        function getCurrentUser() {
+             currentUser = loadFromLocalStorage(CURRENT_USER_STORAGE_KEY, null);
+             return currentUser;
+        }
+
+        function clearCurrentUser() {
+             currentUser = null;
+             removeFromLocalStorage(CURRENT_USER_STORAGE_KEY);
+             console.log("Current user cleared.");
+        }
+
+
+        // --- Form Switching ---
+        function showSection(sectionId) {
+            signinSection.classList.remove('active');
+            createAccountSection.classList.remove('active');
+            document.getElementById(sectionId).classList.add('active');
+            authMessageArea.textContent = '';
+            authMessageArea.className = 'message';
+        }
+
+        // --- Simulated Login Logic ---
+        signinForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const enteredUsername = signinUsernameInput.value.trim();
+            const enteredPassword = signinPasswordInput.value.trim();
+
+            authMessageArea.textContent = '';
+            authMessageArea.className = 'message';
+
+            console.log(`Attempting login with Username: "${enteredUsername}"`);
+
+            loadAccounts();
+
+            if (userAccounts.hasOwnProperty(enteredUsername) && userAccounts[enteredUsername] === enteredPassword) {
+                authMessageArea.textContent = `Login successful! Welcome, ${enteredUsername}!`;
+                authMessageArea.classList.add('success');
+                console.log('Simulated login successful.');
+
+                setCurrentUser(enteredUsername);
+                showWiki(); // Show the wiki content
+
+            } else {
+                authMessageArea.textContent = 'Invalid username or password.';
+                authMessageArea.classList.add('error');
+                console.warn('Simulated login failed.');
+                signinPasswordInput.value = '';
+            }
+        });
+
+        // --- Simulated Create Account Logic ---
+        createAccountForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const newUsername = createUsernameInput.value.trim();
+            const newPassword = createPasswordInput.value.trim();
+            const confirmPassword = confirmPasswordInput.value.trim();
+
+            authMessageArea.textContent = '';
+            authMessageArea.className = 'message';
+
+            console.log(`Attempting to create account with Username: "${newUsername}"`);
+
+            // --- Validation ---
+            if (newUsername.length < 3) {
+                 authMessageArea.textContent = 'Username must be at least 3 characters long.';
+                 authMessageArea.classList.add('error');
+                 return;
+            }
+             if (newPassword.length < 6) {
+                 authMessageArea.textContent = 'Password must be at least 6 characters long.';
+                 authMessageArea.classList.add('error');
+                 return;
+             }
+             if (newPassword !== confirmPassword) {
+                 authMessageArea.textContent = 'Passwords do not match.';
+                 authMessageArea.classList.add('error');
+                 return;
+             }
+
+            // --- Simulate Account Creation ---
+            loadAccounts();
+
+            if (userAccounts.hasOwnProperty(newUsername)) {
+                authMessageArea.textContent = `Username "${newUsername}" already exists.`;
+                authMessageArea.classList.add('error');
+                console.warn('Account creation failed: Username exists.');
+            } else {
+                userAccounts[newUsername] = newPassword;
+                saveAccounts();
+
+                authMessageArea.textContent = `Account "${newUsername}" created successfully! You can now log in.`;
+                authMessageArea.classList.add('success');
+                console.log('Simulated account created successfully.');
+
+                createUsernameInput.value = '';
+                createPasswordInput.value = '';
+                confirmPasswordInput.value = '';
+
+                showSection('signinSection'); // Switch back to sign-in after creation
+            }
+        });
+
+
+        // --- Wiki Core Functions ---
+
+        // Load wiki pages (currently loads a single global set)
+        function loadWikiPages() {
+            // In a real app, you'd load pages specific to the currentUser
+            wikiPages = loadFromLocalStorage(WIKI_STORAGE_KEY, {});
+            console.log('Wiki pages loaded.');
+        }
+
+        // Save wiki pages (currently saves a single global set)
+        function saveWikiPages() {
+             // In a real app, you'd save pages specific to the currentUser
+            saveToLocalStorage(WIKI_STORAGE_KEY, wikiPages);
+        }
+
+        // Function to sanitize a page title (remove leading/trailing spaces, basic cleaning)
+        function sanitizeTitle(title) {
+            return title.trim().replace(/\s+/g, ' '); // Trim whitespace and reduce multiple spaces to one
+        }
+
+        // Function to load and display a wiki page
+        function loadPage(title) {
+            const sanitizedTitle = sanitizeTitle(title);
+            currentPageTitle = sanitizedTitle; // Set current page state
+
+            // Update titles
+            document.getElementById('pageTitle').textContent = `${sanitizedTitle} - Sylvesterpidia`; // Update browser tab title
+            wikiPageMainTitle.textContent = sanitizedTitle; // Update main wiki page title
+            wikiPageTitleInput.value = sanitizedTitle; // Put title in the input box
+
+            // Get content - if page doesn't exist, use a default message for new pages
+            const pageContent = wikiPages[sanitizedTitle] || `<p>This page "${sanitizedTitle}" does not exist yet. Click "Edit Page" to create it.</p>`;
+
+            // Display content in view mode
+            viewArea.innerHTML = formatContentForView(pageContent); // Format content for display
+            viewArea.style.display = 'block'; // Show view area
+
+            // Hide edit area and editor toolbar
+            editArea.style.display = 'none';
+            editorToolbar.style.display = 'none'; // Hide toolbar in view mode
+            editorContent.innerHTML = ''; // Clear editor content
+
+            // Update the list of all pages
+            displayAllPages();
+
+            console.log(`Loaded page: "${sanitizedTitle}"`);
+        }
+
+        // Function to switch to edit mode for the current page
+        function editPage() {
+             if (!currentPageTitle) {
+                 alert("Please view or create a page first.");
+                 return;
+             }
+
+            // Get content - if page doesn't exist, start with empty editor
+            const pageContent = wikiPages[currentPageTitle] || '';
+
+            // Load content into the editor (contenteditable div)
+            editorContent.innerHTML = pageContent;
+
+            // Show edit area and editor toolbar
+            editArea.style.display = 'flex';
+            editorToolbar.style.display = 'flex'; // Show toolbar in edit mode
+            viewArea.style.display = 'none'; // Hide view area
+
+            console.log(`Editing page: "${currentPageTitle}"`);
+        }
+
+        // Function to save the content from the editor
+        function savePage() {
+             if (!currentPageTitle) {
+                 alert("Cannot save. No page title set.");
+                 return;
+             }
+
+            // Get the HTML content from the contenteditable div
+            const newContent = editorContent.innerHTML;
+
+             // If the page was previously non-existent and is now being saved with content,
+             // ensure it's added to the wikiPages object if it wasn't already.
+             if (!wikiPages.hasOwnProperty(currentPageTitle) && newContent.trim() !== '') {
+                  wikiPages[currentPageTitle] = newContent;
+             } else if (newContent.trim() === '' && wikiPages.hasOwnProperty(currentPageTitle)) {
+                  // If saving an empty page that existed, maybe delete it?
+                  // For now, we'll allow saving empty pages.
+                   wikiPages[currentPageTitle] = newContent;
+             } else {
+                  wikiPages[currentPageTitle] = newContent;
+             }
+
+
+            saveWikiPages(); // Save to localStorage
+
+            console.log(`Saved page: "${currentPageTitle}"`);
+
+            // Switch back to view mode after saving
+            loadPage(currentPageTitle);
+        }
+
+         // Function to delete the current page
+         function deletePage() {
+             const HOME_PAGE_TITLE = 'Home Page';
+
+             if (!currentPageTitle || currentPageTitle === HOME_PAGE_TITLE) {
+                 alert("Cannot delete the Home Page or no page is selected.");
+                 return;
+             }
+
+             if (confirm(`Are you sure you want to delete the page "${currentPageTitle}"?`)) {
+                 delete wikiPages[currentPageTitle]; // Remove page from data structure
+                 saveWikiPages(); // Save to localStorage
+
+                 console.log(`Deleted page: "${currentPageTitle}"`);
+
+                 // Load the home page or a default message after deletion
+                 loadPage(HOME_PAGE_TITLE); // Try loading home page
+                 if (!wikiPages.hasOwnProperty(HOME_PAGE_TITLE)) {
+                     // If home page didn't exist or was deleted, show welcome
+                     viewArea.innerHTML = `<p>Page "${currentPageTitle}" deleted.</p><p>Welcome to your Simple Local Wiki! Enter a page title above and click "View Page" or "Edit Page" to get started.</p>`;
+                     wikiPageMainTitle.textContent = "Simple Local Wiki";
+                     document.getElementById('pageTitle').textContent = "Simple Local Wiki";
+                     currentPageTitle = '';
+                     wikiPageTitleInput.value = '';
+                 }
+
+                 // Update the list of all pages
+                 displayAllPages();
+             }
+         }
+
+
+        // Function to display the list of all existing pages
+        function displayAllPages() {
+            allPagesList.innerHTML = ''; // Clear current list
+            const pageTitles = Object.keys(wikiPages).sort(); // Get and sort titles
+
+            if (pageTitles.length === 0) {
+                allPagesList.innerHTML = '<li>No pages created yet.</li>';
+                return;
+            }
+
+            pageTitles.forEach(title => {
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                link.textContent = title;
+                link.href = '#'; // Prevent actual navigation
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    loadPage(title); // Load the clicked page
+                });
+                listItem.appendChild(link);
+                allPagesList.appendChild(listItem);
+            });
+        }
+
+
+        // --- Content Formatting for Display (Includes Templates) ---
+        function formatContentForView(content) {
+            let formattedContent = content;
+
+            // 1. Simulate Template Replacement (Basic)
+            // Looks for {{TemplateName}} and replaces with predefined HTML
+            const templateRegex = /\{\{(.*?)\}\}/g;
+            formattedContent = formattedContent.replace(templateRegex, (match, templateName) => {
+                 const trimmedTemplateName = templateName.trim();
+                 if (simulatedTemplates.hasOwnProperty(trimmedTemplateName)) {
+                     return simulatedTemplates[trimmedTemplateName]; // Replace with template HTML
+                 } else {
+                     // If template doesn't exist, show it in red or as a link to create it
+                     return `<span style="color: red; font-weight: bold;" title="Template does not exist">\{\{${templateName}\}\}</span>`;
+                 }
+            });
+
+
+            // 2. Find and replace [[Page Title]] links
+            const linkRegex = /\[\[(.*?)\]\]/g;
+            formattedContent = formattedContent.replace(linkRegex, (match, pageTitle) => {
+                const sanitizedLinkTitle = sanitizeTitle(pageTitle);
+                if (wikiPages.hasOwnProperty(sanitizedLinkTitle)) {
+                    // If page exists, create a blue link
+                    return `<a href="#" onclick="loadPage('${sanitizedLinkTitle.replace(/'/g, "\\'").replace(/"/g, '\\"')}')">${pageTitle}</a>`;
+                } else {
+                    // If page doesn't exist, create a red link (indicating a broken or new link)
+                    return `<a href="#" style="color: red;" onclick="loadPage('${sanitizedLinkTitle.replace(/'/g, "\\'").replace(/"/g, '\\"')}'); editPage();">${pageTitle}</a>`;
+                }
+            });
+
+             // Note: Newlines are handled by the rich text editor saving HTML (e.g., <p>, <br>)
+             // If using a simple textarea, we would re-add newline replacement here.
+             // formattedContent = formattedContent.replace(/\n/g, '<br>'); // Only if not using rich editor saving HTML
+
+
+            return formattedContent;
+        }
+
+
+        // --- Rich Text Editor Functions (Integrated) ---
+        function formatText(command, value = null) {
+            editorContent.focus();
+            document.execCommand(command, false, value);
+        }
+
+         function insertHTML(html) {
+             editorContent.focus();
+             document.execCommand('insertHTML', false, html);
+         }
+
+         function insertTable() {
+             const tableHTML = `
+             <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse;">
+                 <tr>
+                     <th>Header 1</th>
+                     <th>Header 2</th>
+                 </tr>
+                 <tr>
+                     <td>Data 1</td>
+                     <td>Data 2</td>
+                 </tr>
+             </table><p></p> `;
+             insertHTML(tableHTML);
+         }
+
+         function insertImage() {
+             const imageUrl = prompt("Enter the image URL:");
+             if (imageUrl) {
+                 const imageHTML = `<img src="${imageUrl}" alt="Image" style="max-width: 100%; height: auto;"><p></p>`; // Add a paragraph after
+                 insertHTML(imageHTML);
+             }
+         }
+
+
+        // --- Show/Hide Sections ---
+        function showAuthSection() {
+             authSection.classList.add('active');
+             authSection.classList.remove('hidden');
+             wikiSection.classList.remove('active');
+             wikiSection.classList.add('hidden');
+             mainTitle.textContent = "Welcome to Sylvesterpidia";
+             document.getElementById('pageTitle').textContent = "Sylvesterpidia - Log in or Create Account";
+             clearCurrentUser();
+             signinForm.reset();
+             createAccountForm.reset();
+             authMessageArea.textContent = 'Please log in or create an account.';
+             authMessageArea.className = 'message';
+             showSection('signinSection');
+        }
+
+        function showWiki() {
+             authSection.classList.remove('active');
+             authSection.classList.add('hidden');
+             wikiSection.classList.add('active');
+             wikiSection.classList.remove('hidden');
+             mainTitle.textContent = "Sylvesterpidia"; // Set main title for wiki section
+             document.getElementById('pageTitle').textContent = "Sylvesterpidia"; // Update browser tab title
+
+             loadWikiPages(); // Load wiki pages for the logged-in user (simulation)
+
+             // Load the home page or a default page after login
+             const HOME_PAGE_TITLE = 'Home Page';
+             if (wikiPages.hasOwnProperty(HOME_PAGE_TITLE)) {
+                 loadPage(HOME_PAGE_TITLE);
+             } else {
+                 // Create a default home page if it doesn't exist
+                 wikiPages[HOME_PAGE_TITLE] = `<h1>Welcome to Sylvesterpidia!</h1>
+
+<p>This is the Home Page.</p>
+
+<p>You can edit this page by clicking the "Edit Page" button.</p>
+
+<p>To create a new page, enter a title in the box above and click "Edit Page".</p>
+
+<p>To link to another page, use double square brackets like this: [[Example Page]]. If the page doesn't exist, the link will be red. Click on a red link to create that page!</p>
+
+<p>Here's a link to a [[Non-Existent Page]].</p>
+
+<p>You can also use formatting from the toolbar when editing, like <b>bold</b>, <i>italic</i>, and <font color="red">color</font>.</p>
+
+<p>Try inserting a table or an image using the buttons in the editor toolbar.</p>
+
+<p>Here's a simulated template: {{Stub}}</p>
+<p>Here's another: {{Welcome}}</p>
+<p>And an infobox: {{InfoBox}}</p>
+`; // Default content now includes HTML and templates
+                 saveWikiPages();
+                 loadPage(HOME_PAGE_TITLE);
+             }
+        }
+
+        // --- Logout Function ---
+        function logout() {
+            console.log("Logging out user:", currentUser);
+            clearCurrentUser();
+            showAuthSection();
+        }
+
+
+        // --- Event Listeners ---
+        showCreateAccountLink.addEventListener('click', (event) => {
+             event.preventDefault();
+             showSection('createAccountSection');
+        });
+
+        showSignInLink.addEventListener('click', (event) => {
+             event.preventDefault();
+             showSection('signinSection');
+        });
+
+        // Wiki controls listeners
+        viewPageButton.addEventListener('click', () => {
+            const title = wikiPageTitleInput.value;
+            if (title) {
+                loadPage(title);
+            } else {
+                alert("Please enter a page title to view.");
+            }
+        });
+
+        editPageButton.addEventListener('click', () => {
+             const title = wikiPageTitleInput.value;
+             if (title) {
+                 loadPage(title); // Load the page content first
+                 editPage(); // Then switch to edit mode
+             } else {
+                 alert("Please enter a page title to edit.");
+             }
+        });
+
+        savePageButton.addEventListener('click', savePage);
+        deletePageButton.addEventListener('click', deletePage);
+        logoutButton.addEventListener('click', logout);
+
+        // Rich Text Editor toolbar listeners
+        boldButton.addEventListener('click', () => formatText('bold'));
+        italicButton.addEventListener('click', () => formatText('italic'));
+        underlineButton.addEventListener('click', () => formatText('underline'));
+        ulButton.addEventListener('click', () => formatText('insertUnorderedList'));
+        olButton.addEventListener('click', () => formatText('insertOrderedList'));
+        fontSizeSelect.addEventListener('change', (event) => formatText('fontSize', event.target.value));
+        colorPicker.addEventListener('input', (event) => formatText('foreColor', event.target.value));
+        alignLeftButton.addEventListener('click', () => formatText('justifyLeft'));
+        alignCenterButton.addEventListener('click', () => formatText('justifyCenter'));
+        alignRightButton.addEventListener('click', () => formatText('justifyRight')); // Corrected ID
+        justifyButton.addEventListener('click', () => formatText('justifyFull'));
+        insertTableButton.addEventListener('click', insertTable); // New listener
+        insertImageButton.addEventListener('click', insertImage); // New listener
+
+
+        // Allow viewing/editing page by pressing Enter in the input field (in wiki section)
+        wikiPageTitleInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                 viewPageButton.click(); // Simulate click on View Page button
+            }
+        });
+
+
+        // --- Initialization ---
+        window.addEventListener('load', () => {
+            loadAccounts(); // Load existing accounts
+
+            // Check if a user is already logged in
+            if (getCurrentUser()) {
+                 console.log("User already logged in:", currentUser);
+                 showWiki(); // If logged in, show the wiki directly
+            } else {
+                 console.log("No user logged in, showing auth section.");
+                 showAuthSection(); // If not logged in, show the auth section
+            }
+        });
+
+        // Optional: Save wiki pages before the user leaves the page
+        window.addEventListener('beforeunload', saveWikiPages);
+
+
+    </script>
+
+</body>
+</html>
